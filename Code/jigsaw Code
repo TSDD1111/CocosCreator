@@ -1,0 +1,212 @@
+// Learn cc.Class:
+//  - https://docs.cocos.com/creator/manual/en/scripting/class.html
+// Learn Attribute:
+//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
+// Learn life-cycle callbacks:
+//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
+
+cc.Class({
+    extends: cc.Component,
+
+    properties: {
+        pos : {
+            default : [],
+            type : [cc.Vec2]
+        },
+        num : {
+            default : [],
+            type : [cc.Node]
+        },
+        scene:{
+            default: null, 
+            type: cc.SceneAsset
+        } 
+    },
+
+    //洗牌算法对数字进行随机排序
+    shuffle : function() { 
+        for (let i = this.value.length - 2; i >= 0; i--) { 
+            var randomIndex = Math.floor(Math.random() * (i + 1));   //随机数下取整
+            var itemAtIndex = this.value[randomIndex]; 
+            this.value[randomIndex] = this.value[i]; 
+            this.value[i] = itemAtIndex;
+        }  
+    },
+    //将图片添加到对应位置
+    add : function(x) {
+        let y = -1;
+        y = this.value[x];
+        this.num[x].position = this.pos[y];
+    },
+    //初始化
+    init : function() {
+        this.shuffle();
+        for(let m = 0; m < 9; m++){
+            this.add(m);
+        }
+    },
+    //判断胜利条件
+    victory : function() {
+        let judge = 0;
+        for(let m = 0; m < this.value.length; m++){
+            if(this.value[m] != m){
+                judge = 1;
+            }
+        }
+        if(judge == 0){
+            cc.director.loadScene(this.scene.name);
+        }
+    },
+
+    //交换两个图片
+    change : function(x) {
+        this.num[x].position = this.pos[this.value[this.firclick]];
+        this.num[this.firclick].position = this.pos[this.value[x]];
+        let temp = this.value[this.firclick];
+        this.value[this.firclick] = this.value[x];
+        this.value[x] = temp;
+    },
+    //点击函数，过于重复，暂无缩减
+    OneUp : function() {
+        if(this.click == 0){
+            this.click = 1;
+            this.firclick = 0;
+            this.num[this.firclick].opacity = 100;
+        }
+        else if(this.click == 1){
+            this.num[this.firclick].opacity = 200;
+            this.click = 0;
+            this.change(0);
+            this.victory();
+        }
+    },
+    TwoUp : function() {
+        if(this.click == 0){
+            this.click = 1;
+            this.firclick = 1;
+            this.num[this.firclick].opacity = 100;
+        }
+        else if(this.click == 1){
+            this.num[this.firclick].opacity = 200;
+            this.click = 0;
+            this.change(1);
+            this.victory();
+        }
+    },
+    ThreeUp : function() {
+        if(this.click == 0){
+            this.click = 1;
+            this.firclick = 2;
+            this.num[this.firclick].opacity = 100;
+        }
+        else if(this.click == 1){
+            this.num[this.firclick].opacity = 200;
+            this.click = 0;
+            this.change(2);
+            this.victory();
+        }
+    },
+    FourUp : function() {
+        if(this.click == 0){
+            this.click = 1;
+            this.firclick = 3;
+            this.num[this.firclick].opacity = 100;
+        }
+        else if(this.click == 1){
+            this.num[this.firclick].opacity = 200;
+            this.click = 0;
+            this.change(3);
+            this.victory();
+        }
+    },
+    FiveUp : function() {
+        if(this.click == 0){
+            this.click = 1;
+            this.firclick = 4;
+            this.num[this.firclick].opacity = 100;
+        }
+        else if(this.click == 1){
+            this.num[this.firclick].opacity = 200;
+            this.click = 0;
+            this.change(4);
+            this.victory();
+        }
+    },
+    SixUp : function() {
+        if(this.click == 0){
+            this.click = 1;
+            this.firclick = 5;
+            this.num[this.firclick].opacity = 100;
+        }
+        else if(this.click == 1){
+            this.num[this.firclick].opacity = 200;
+            this.click = 0;
+            this.change(5);
+            this.victory();
+        }
+    },
+    SevenUp : function() {
+        if(this.click == 0){
+            this.click = 1;
+            this.firclick = 6;
+            this.num[this.firclick].opacity = 100;
+        }
+        else if(this.click == 1){
+            this.num[this.firclick].opacity = 200;
+            this.click = 0;
+            this.change(6);
+            this.victory();
+        }
+    },
+    EightUp : function() {
+        if(this.click == 0){
+            this.click = 1;
+            this.firclick = 7;
+            this.num[this.firclick].opacity = 100;
+        }
+        else if(this.click == 1){
+            this.num[this.firclick].opacity = 200;
+            this.click = 0;
+            this.change(7);
+            this.victory();
+        }
+    },
+    NineUp : function() {
+        if(this.click == 0){
+            this.click = 1;
+            this.firclick = 8;
+            this.num[this.firclick].opacity = 100;
+        }
+        else if(this.click == 1){
+            this.num[this.firclick].opacity = 200;
+            this.click = 0;
+            this.change(8);
+            this.victory();
+        }
+    },
+
+    onLoad () {
+        this.value = new Array(0,1,2,3,4,5,6,7,8);
+        //判断第几次点击，以及第一次点击那一块
+        this.click = 0;
+        this.firclick = 0;
+        //初始化，同时数字序列是随机的
+        this.init();
+        //设置监听来监听每个数字被点击
+        this.num[0].on(cc.Node.EventType.TOUCH_START, this.OneUp, this);
+        this.num[1].on(cc.Node.EventType.TOUCH_START, this.TwoUp, this);
+        this.num[2].on(cc.Node.EventType.TOUCH_START, this.ThreeUp, this);
+        this.num[3].on(cc.Node.EventType.TOUCH_START, this.FourUp, this);
+        this.num[4].on(cc.Node.EventType.TOUCH_START, this.FiveUp, this);
+        this.num[5].on(cc.Node.EventType.TOUCH_START, this.SixUp, this);
+        this.num[6].on(cc.Node.EventType.TOUCH_START, this.SevenUp, this);
+        this.num[7].on(cc.Node.EventType.TOUCH_START, this.EightUp, this);
+        this.num[8].on(cc.Node.EventType.TOUCH_START, this.NineUp, this);
+    },
+
+    start () {
+
+    },
+
+    // update (dt) {},
+});
