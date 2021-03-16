@@ -1,0 +1,109 @@
+//实现鼠标选取某node，移动鼠标同时移动node，并将node放入九宫格中
+// Learn cc.Class:
+//  - https://docs.cocos.com/creator/manual/en/scripting/class.html
+// Learn Attribute:
+//  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
+// Learn life-cycle callbacks:
+//  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
+
+cc.Class({
+    extends: cc.Component,
+
+    properties: {
+        one : {
+            default : null,
+            type : cc.Node
+        }
+    },
+
+    // LIFE-CYCLE CALLBACKS:
+    OneUp : function (t) {
+        this.move = 1;
+    },
+
+    OneMove : function (t) {
+        this.nowpos = t.getLocation();
+        this.one.x = this.nowpos.x - 480;
+        this.one.y = this.nowpos.y - 320;
+    },
+
+    OneEnd : function () {
+        this.move = 0;
+        if(this.one.x > -125 && this.one.x < -75){
+            if(this.one.y > 75 && this.one.y < 125){
+                this.one.position = cc.v2(-100, 100);
+            }
+            else if(this.one.y < 25 && this.one.y > -25){
+                this.one.position = cc.v2(-100,0);
+            }
+            else if(this.one.y < -75 && this.one.y > -125){
+                this.one.position = cc.v2(-100,-100);
+            }
+            else{
+                this.one.position = cc.v2(300,-150);
+            }
+        }
+        else if(this.one.x > -25 && this.one.x < 25){
+            if(this.one.y > 75 && this.one.y < 125){
+                this.one.position = cc.v2(0, 100);
+            }
+            else if(this.one.y < 25 && this.one.y > -25){
+                this.one.position = cc.v2(0,0);
+            }
+            else if(this.one.y < -75 && this.one.y > -125){
+                this.one.position = cc.v2(0,-100);
+            }
+            else{
+                this.one.position = cc.v2(300,-150);
+            }
+        }
+        else if(this.one.x > 75 && this.one.x < 125){
+            if(this.one.y > 75 && this.one.y < 125){
+                this.one.position = cc.v2(100, 100);
+            }
+            else if(this.one.y < 25 && this.one.y > -25){
+                this.one.position = cc.v2(100,0);
+            }
+            else if(this.one.y < -75 && this.one.y > -125){
+                this.one.position = cc.v2(100,-100);
+            }
+            else{
+                this.one.position = cc.v2(300,-150);
+            }
+        }
+        else{
+            this.one.position = cc.v2(300,-150);
+        }
+    },
+
+    onLoad () {
+        var ctx = this.node.getComponent(cc.Graphics);
+        ctx.rect(-152,-152,304,304);
+        ctx.stroke();
+        ctx.moveTo(-150,50);
+        ctx.lineTo(150,50);
+        ctx.stroke();
+        ctx.moveTo(-150,-50);
+        ctx.lineTo(150,-50);
+        ctx.stroke();
+        ctx.moveTo(-50,150);
+        ctx.lineTo(-50,-150);
+        ctx.stroke();
+        ctx.moveTo(50,150);
+        ctx.lineTo(50,-150);
+        ctx.stroke();
+        
+
+        this.one.position = cc.v2(300,-150);
+        this.move = 0;
+        //this.one.on(cc.Node.EventType.TOUCH_START, this.OneUp, this);
+        this.one.on(cc.Node.EventType.TOUCH_MOVE, this.OneMove, this);
+        this.one.on(cc.Node.EventType.TOUCH_END, this.OneEnd, this);
+    },
+
+    start () {
+
+    },
+
+    // update (dt) {},
+});
